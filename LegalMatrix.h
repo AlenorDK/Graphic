@@ -1,11 +1,18 @@
 #pragma once
-#define HistoryOfRussianState
-#define illegal legal
+#include <iostream>
+
 class LegalMatrix
 {
 	int columns;
 	int rows;
 	int** matrix;
+	
+	int max(int a, int b) 
+	{
+		return a > b ? a : b;
+		
+	}
+	
 public:
 
 	LegalMatrix(int columns, int rows)
