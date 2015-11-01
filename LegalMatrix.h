@@ -84,12 +84,12 @@ public:
 				//If somebody tries to add matrix of different dimmensions
 				//the little one is considered as filled up with zeroes.
 				int a =
-					i < this->GetLegalMatrixRows() ||
+					i < this->GetLegalMatrixRows() &&
 					j < this->GetLegalMatrixColumns()
 					? (*this)[i][j]
 					: 0;
 				int b =
-					i < right.GetLegalMatrixRows() ||
+					i < right.GetLegalMatrixRows() &&
 					j < right.GetLegalMatrixColumns()
 					? right[i][j]
 					: 0;
@@ -112,12 +112,12 @@ public:
 				//If somebody tries to add matrix of different dimmensions
 				//the little one is considered as filled up with zeroes.
 				int a =
-					i < this->GetLegalMatrixRows() ||
+					i < this->GetLegalMatrixRows() &&
 					j < this->GetLegalMatrixColumns()
 					? (*this)[i][j]
 					: 0;
 				int b =
-					i < right.GetLegalMatrixRows() ||
+					i < right.GetLegalMatrixRows() &&
 					j < right.GetLegalMatrixColumns()
 					? right[i][j]
 					: 0;
