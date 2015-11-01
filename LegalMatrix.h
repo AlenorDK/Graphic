@@ -80,12 +80,12 @@ public:
 		matrix[row][column] = value;
 	}
 
-	static LegalMatrix* LegalMultiply(LegalMatrix &first, LegalMatrix &second)
+	LegalMatrix* operator * (LegalMatrix right)
 	{
-		LegalMatrix *resultMatrix = new LegalMatrix(first.GetLegalMatrixRows(), second.GetLegalMatrixColumns());
+		LegalMatrix *resultMatrix = new LegalMatrix(this->GetLegalMatrixRows(), right.GetLegalMatrixColumns());
 		int resultLegalMatrixRows = resultMatrix->GetLegalMatrixRows();
 		int resultLegalMatrixColumns = resultMatrix->GetLegalMatrixColumns();
-		int inner = first.GetLegalMatrixColumns();
+		int inner = this->GetLegalMatrixColumns();
 		for (int row = 0; row < resultLegalMatrixRows; row++)
 		{
 			for (int column = 0; column < resultLegalMatrixColumns; column++)
@@ -93,7 +93,7 @@ public:
 				int result = 0;
 				for (int i = 0; i < inner; i++)
 				{
-					result += first.GetLegalValue(row, i) * second.GetLegalValue(i, column);
+					result += this->GetLegalValue(row, i) * right.GetLegalValue(i, column);
 				}
 				(*resultMatrix).SetLegalValue(result, row, column);
 			}
