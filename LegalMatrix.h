@@ -31,5 +31,46 @@ public:
 	virtual ~LegalMatrix(void)
 	{
 	}
+	
+	int GetLegalMatrixColumns()
+	{
+		return this->columns;
+	}
+
+	int GetLegalMatrixRows()
+	{
+		return this->rows;
+	}
+
+	int GetLegalValue(int row, int column)
+	{
+		return matrix[row][column];
+	}
+
+	void SetLegalValue(int value, int row, int column)
+	{
+		matrix[row][column] = value;
+	}
+
+	static LegalMatrix* LegalMultiply(LegalMatrix &first, LegalMatrix &second)
+	{
+		LegalMatrix *resultMatrix = new LegalMatrix(first.GetLegalMatrixRows(), second.GetLegalMatrixColumns());
+		int resultLegalMatrixRows = resultMatrix->GetLegalMatrixRows();
+		int resultLegalMatrixColumns = resultMatrix->GetLegalMatrixColumns();
+		int inner = first.GetLegalMatrixColumns();
+		for (int row = 0; row < resultLegalMatrixRows; row++)
+		{
+			for (int column = 0; column < resultLegalMatrixColumns; column++)
+			{
+				int result = 0;
+				for (int i = 0; i < inner; i++)
+				{
+					result += first.GetLegalValue(row, i) * second.GetLegalValue(i, column);
+				}
+				(*resultMatrix).SetLegalValue(result, row, column);
+			}
+		}
+		return resultMatrix;
+	}
 };
 
