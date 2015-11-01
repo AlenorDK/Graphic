@@ -148,5 +148,12 @@ public:
 		}
 		return resultMatrix;
 	}
+	
+	//User should check dimmensions before using it.
+    LegalMatrix operator= (int** right)
+    {
+        this->matrix = right;
+        return *this;
+    }
 };
 
