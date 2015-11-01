@@ -42,6 +42,18 @@ public:
 	{
 		matrix[row][column] = value;
 	}
+	
+	static void PrintLegalMatrix(LegalMatrix matrixToPrint)
+	{
+		for (int i = 0; i < matrixToPrint.GetLegalMatrixRows(); i++)
+		{
+			for (int j = 0; j < matrixToPrint.GetLegalMatrixColumns(); j++)
+			{
+				printf("%i ", matrixToPrint.GetLegalValue(i, j));
+			}
+			printf("%c", '\n');
+		}
+	}
 
 	//Provides access to specified row.
     	//Notice that matrix[n] construction is lvalue
