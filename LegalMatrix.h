@@ -18,44 +18,7 @@ public:
 			this->matrix[i] = new int[rows];
 		}
 	}
-
-    	//Provides access to specified row.
-    	//Notice that matrix[n] construction is lvalue
-	//E.g.: LegalMatrix(5, 5)[n] = array;
-	//User should make sure matrix[n] length is equal to array length
-	int* &operator [](int idx)
-	{
-	   return this->matrix[idx];
-	}
-
-    LegalMatrix operator+(LegalMatrix right)
-    {
-        LegalMatrix ret_legal_matrix(
-            max(this->GetLegalMatrixColumns(), right.GetLegalMatrixColumns()),
-            max(this->GetLegalMatrixRows(), right.GetLegalMatrixColumns()));
-        for (int i = 0; i < ret_legal_matrix.GetLegalMatrixRows(); ++i)
-        {
-            for (int j = 0; j < ret_legal_matrix.GetLegalMatrixColumns(); ++j)
-            {
-                //If somebody tries to add matrix of different dimmensions
-                //the little one is considered as filled up with zeroes.
-                int a = 
-                    i < this->GetLegalMatrixRows() || 
-                    j < this->GetLegalMatrixColumns()
-                    ? (*this)[i][j] 
-                    : 0;
-                int b =
-                    i < right.GetLegalMatrixRows() ||
-                    j < right.GetLegalMatrixColumns()
-                    ? right[i][j]
-                    : 0;
-
-                ret_legal_matrix[i][j] = a + b;
-            }
-        }
-
-        return ret_legal_matrix;
-    }
+    	
 	virtual ~LegalMatrix(void)
 	{
 	}
@@ -80,6 +43,43 @@ public:
 		matrix[row][column] = value;
 	}
 
+	//Provides access to specified row.
+    	//Notice that matrix[n] construction is lvalue
+	//E.g.: LegalMatrix(5, 5)[n] = array;
+	//User should make sure matrix[n] length is equal to array length
+	int* &operator [](int idx)
+	{
+	   return this->matrix[idx];
+	}
+	
+	LegalMatrix operator+(LegalMatrix right)
+    	{
+        	LegalMatrix ret_legal_matrix(
+            	max(this->GetLegalMatrixColumns(), right.GetLegalMatrixColumns()),
+            	max(this->GetLegalMatrixRows(), right.GetLegalMatrixColumns()));
+        	for (int i = 0; i < ret_legal_matrix.GetLegalMatrixRows(); ++i)
+        	{
+            		for (int j = 0; j < ret_legal_matrix.GetLegalMatrixColumns(); ++j)
+            		{
+                	//If somebody tries to add matrix of different dimmensions
+                	//the little one is considered as filled up with zeroes.
+                		int a = 
+                    		i < this->GetLegalMatrixRows() || 
+                    		j < this->GetLegalMatrixColumns()
+                    		? (*this)[i][j] 
+                    		: 0;
+                		int b =
+                    		i < right.GetLegalMatrixRows() ||
+                    		j < right.GetLegalMatrixColumns()
+                    		? right[i][j]
+                    		: 0;
+
+                		ret_legal_matrix[i][j] = a + b;
+            		}
+		}
+        	return ret_legal_matrix;
+    	}
+    	
 	LegalMatrix* operator * (LegalMatrix right)
 	{
 		LegalMatrix *resultMatrix = new LegalMatrix(this->GetLegalMatrixRows(), right.GetLegalMatrixColumns());
