@@ -7,10 +7,17 @@ class LegalMatrix
 	int rows;
 	int** matrix;
 	
+	void to_identity()
+    {
+        for (int i = 0; i < this->rows; ++i)
+        {
+            this->matrix[i][i] = 1;
+        }
+    }
+	
 	int max(int a, int b) 
 	{
 		return a > b ? a : b;
-		
 	}
 	
 public:
@@ -148,5 +155,29 @@ public:
 		}
 		return resultMatrix;
 	}
+	
+    //UNCHECKED!
+    //Use for square matrices only
+    LegalMatrix operator^ (unsigned int power)
+    {
+        //If *this is not square, do nothing and return this.
+        if (this->GetLegalMatrixColumns() != this->GetLegalMatrixRows())
+        {
+            return *this;
+        }
+        
+        LegalMatrix ret_legal_matrix(
+            this->GetLegalMatrixColumns(),
+            this->GetLegalMatrixRows());
+        
+        ret_legal_matrix.to_identity();
+
+        for (int i = 0; i < power; ++i)
+        {
+            ret_legal_matrix = *(ret_legal_matrix * *this);
+        }
+
+        return ret_legal_matrix;
+    }
 };
 
