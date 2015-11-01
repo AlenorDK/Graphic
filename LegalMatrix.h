@@ -19,14 +19,14 @@ public:
 		}
 	}
 
-    //Provides access to specified row.
-    //Notice that matrix[n] construction is lvalue
-    //E.g.: LegalMatrix(5, 5)[n] = array;
-    //User should make sure matrix[n] length is equal to array length
-    int* &operator [](int idx)
-    {
-        return this->matrix[idx];
-    }
+    	//Provides access to specified row.
+    	//Notice that matrix[n] construction is lvalue
+	//E.g.: LegalMatrix(5, 5)[n] = array;
+	//User should make sure matrix[n] length is equal to array length
+	int* &operator [](int idx)
+	{
+	   return this->matrix[idx];
+	}
 
 	virtual ~LegalMatrix(void)
 	{
