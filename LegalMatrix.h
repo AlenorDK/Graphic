@@ -1,16 +1,16 @@
 #pragma once
 #include <iostream>
 
+template <typename T>
 class LegalMatrix
 {
 	int columns;
 	int rows;
-	int** matrix;
+	T** matrix;
 	
 	int max(int a, int b) 
 	{
 		return a > b ? a : b;
-		
 	}
 	
 public:
@@ -19,10 +19,10 @@ public:
 	{
 		this->columns = columns;
 		this->rows = rows;
-		this->matrix = new int*[rows];
+		this->matrix = new T*[rows];
 		for (int i = 0; i < rows; i++)
 		{
-			this->matrix[i] = new int[columns];
+			this->matrix[i] = new T[columns];
 		}
 	}
     	
@@ -40,12 +40,12 @@ public:
 		return this->rows;
 	}
 
-	int GetLegalValue(int row, int column)
+	T GetLegalValue(int row, int column)
 	{
 		return matrix[row][column];
 	}
 
-	void SetLegalValue(int value, int row, int column)
+	void SetLegalValue(T value, int row, int column)
 	{
 		matrix[row][column] = value;
 	}
@@ -66,7 +66,7 @@ public:
     	//Notice that matrix[n] construction is lvalue
 	//E.g.: LegalMatrix(5, 5)[n] = array;
 	//User should make sure matrix[n] length is equal to array length
-	int* &operator [](int idx)
+	T* &operator [](int idx)
 	{
 	   return this->matrix[idx];
 	}
@@ -83,12 +83,12 @@ public:
 			{
 				//If somebody tries to add matrix of different dimmensions
 				//the little one is considered as filled up with zeroes.
-				int a =
+				T a =
 					i < this->GetLegalMatrixRows() &&
 					j < this->GetLegalMatrixColumns()
 					? (*this)[i][j]
 					: 0;
-				int b =
+				T b =
 					i < right.GetLegalMatrixRows() &&
 					j < right.GetLegalMatrixColumns()
 					? right[i][j]
@@ -111,12 +111,12 @@ public:
 			{
 				//If somebody tries to add matrix of different dimmensions
 				//the little one is considered as filled up with zeroes.
-				int a =
+				T a =
 					i < this->GetLegalMatrixRows() &&
 					j < this->GetLegalMatrixColumns()
 					? (*this)[i][j]
 					: 0;
-				int b =
+				T b =
 					i < right.GetLegalMatrixRows() &&
 					j < right.GetLegalMatrixColumns()
 					? right[i][j]
@@ -138,7 +138,7 @@ public:
 		{
 			for (int column = 0; column < resultLegalMatrixColumns; column++)
 			{
-				int result = 0;
+				T result = 0;
 				for (int i = 0; i < inner; i++)
 				{
 					result += this->GetLegalValue(row, i) * right.GetLegalValue(i, column);
@@ -150,7 +150,7 @@ public:
 	}
 	
 	//User should check dimmensions before using it.
-    LegalMatrix operator= (int** right)
+    LegalMatrix operator= (T** right)
     {
         this->matrix = right;
         return *this;
