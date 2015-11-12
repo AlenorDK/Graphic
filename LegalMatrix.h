@@ -25,6 +25,13 @@ public:
 			this->matrix[i] = new int[columns];
 		}
 	}
+	
+	LegalMatrix(int** matrix, int rows, int columns)
+    	{
+        	this->matrix = matrix;
+        	this->columns = columns;
+        	this->rows = rows;
+    	}
     	
 	virtual ~LegalMatrix(void)
 	{
@@ -150,10 +157,10 @@ public:
 	}
 	
 	//User should check dimmensions before using it.
-    LegalMatrix operator= (int** right)
-    {
-        this->matrix = right;
-        return *this;
-    }
+	LegalMatrix operator= (int** right)
+    	{
+        	this->matrix = right;
+        	return *this;
+    	}
 };
 
