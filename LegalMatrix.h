@@ -37,6 +37,19 @@ public:
 	{
 	}
 	
+	static LegalMatrix<T> GetIdentityMatrix(int size)
+    	{
+    		LegalMatrix<T> identityMatrix(size, size);
+        	for (int i = 0; i < identityMatrix.size; ++i)
+        	{
+        		for (int j = 0; j < identityMatrix.size; j++)
+        		{
+            			identityMatrix[i][j] = (i == j);
+        		}
+        	}
+        	return identityMatrix;
+    	}
+	
 	int GetLegalMatrixColumns()
 	{
 		return this->columns;
