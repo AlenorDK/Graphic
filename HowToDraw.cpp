@@ -13,8 +13,8 @@ void verticalAxePreDrawingBeforGeneralDrawingOperationInCaseOfThereWereNotAnyAxi
 void horizontalAxePreDrawingBeforGeneralDrawingOperationInCaseOfThereWereNotAnyAxisBefore(HDC dc, RECT r);
 
 void testDrawing1(HDC dc);
-void testDrawing(HDC dc, bool isThis);
-void testDrawing(HDC dc, bool isThis, shift Int);
+void testDrawing(HDC dc);
+void testDrawing(HDC dc, int Int);
 
 void moveCameraUp(HDC dc);
 void moveCameraDown(HDC dc);
@@ -25,7 +25,6 @@ const int TOP = 5;
 const int BOTTOM = -5;
 shift static_shift = 0;
 std::pair<int, int> dekToScreen(std::pair<double, double> coors, HDC dc);
-
 
 int _stdcall WinMain (
     HINSTANCE hInstance,
@@ -147,11 +146,11 @@ LRESULT _stdcall WndProc (HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 }
 
 void moveCameraUp (HDC dc) {
-    testDrawing(dc, 1, 10);
+    testDrawing(dc, 10);
 }
 
 void moveCameraDown (HDC dc) {
-    testDrawing(dc, 1, -10);
+    testDrawing(dc, -10);
 }
 
 void verticalAxePreDrawingBeforGeneralDrawingOperationInCaseOfThereWereNotAnyAxisBefore (HDC dc, RECT r) {
@@ -169,7 +168,7 @@ void horizontalAxeMovingDuringGeneralDrawingOperationInCaseOfThereWereAnyAxisBef
     LineTo(dc, r.right, r.bottom / 2 + Int);
 }
 
-void testDrawing (HDC dc, bool isThis) {
+void testDrawing (HDC dc) {
     RECT r;
     GetClientRect(WindowFromDC(dc), &r);
     Rectangle(dc, 0, 0, r.right, r.bottom);
@@ -189,7 +188,7 @@ void testDrawing (HDC dc, bool isThis) {
     }
 }
 
-void testDrawing (HDC dc, bool isThis, shift Int) {
+void testDrawing (HDC dc, int Int) {
     static_shift += Int;
 
     RECT r;
