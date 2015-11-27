@@ -1,0 +1,74 @@
+#pragma once
+#include <fstream>
+
+class CelestialObject {
+public:
+	CelestialObject(void)
+	{
+		this->x = 0;
+		this->y = 0;
+		this->speed = 0;
+	}
+
+	CelestialObject(double x, double y, double speed)
+	{
+		this->x = x;
+		this->y = y;
+		this->speed = speed;
+	}
+	double x;
+	double y;
+	double speed;
+};
+
+class SolarSystem
+{
+	CelestialObject* sol;
+	CelestialObject* earth;
+	CelestialObject* luna;
+public:
+
+	const double EARTH_SOL_RADIUS = 20;
+	const double LUNA_EARTH_RADIUS = 5;
+
+	SolarSystem(void)
+	{
+		this->sol = new CelestialObject(0, 0, 0);
+		this->earth = new CelestialObject(0.5, 0.5, 0.5);
+		this->luna = new CelestialObject(1, 1, 1);
+	}
+	
+	SolarSystem(CelestialObject* sol, CelestialObject* earth, CelestialObject* luna)
+	{
+		this->sol = sol;
+		this->earth = earth;
+		this->luna = luna;
+	}
+
+	virtual ~SolarSystem(void)
+	{
+	}
+
+	static SolarSystem* parse(std::ifstream* File)
+	{
+		double x, y, speed;
+		*File >> x >> y >> speed;
+		CelestialObject* sol = new CelestialObject(x, y, speed);
+		*File >> x >> y >> speed;
+		CelestialObject* earth = new CelestialObject(x, y, speed);
+		*File >> x >> y >> speed;
+		CelestialObject* luna = new CelestialObject(x, y, speed);
+
+		return new SolarSystem(sol, earth, luna);
+	};
+
+	void recalculateCoordinates()
+	{
+		this->earth->x += EARTH_SOL_RADIUS*cos(this->earth->speed);
+		this->earth->y += EARTH_SOL_RADIUS*sin(this->earth->speed);
+		this->luna->x += LUNA_EARTH_RADIUS*cos(this->luna->speed);
+		this->luna->y += LUNA_EARTH_RADIUS*sin(this->luna->speed);
+	}
+
+};
+
