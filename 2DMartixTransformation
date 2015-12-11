@@ -1,0 +1,64 @@
+#pragma once
+#include "F:\Лабы\LegalMatrix\LegalMatrix\LegalMatrix.h"
+#define PI 3.14159265359
+
+
+template <typename T>
+LegalMatrix<T> TranspositionMatrix(T x, T y)
+{
+	LegalMatrix<T> result = LegalMatrix<T>::GetIdentityMatrix(3);
+	result[0][2] = x;
+	result[1][2] = y;
+	return result;
+}
+
+template <typename T>
+LegalMatrix<T> RotationMatrix(int degrees)
+{
+	double radian = PI*degrees/180;
+	double sinPhi = sin(radian);
+	double cosPhi = cos(radian);
+	LegalMatrix<T> result = LegalMatrix<T>::GetIdentityMatrix(3);
+	result[0][0] = cosPhi;
+	result[0][1] = -sinPhi;
+	result[1][0] = sinPhi;
+	result[1][1] = cosPhi;
+	return result;
+}
+
+enum MirrorOptions
+{
+	Ox = 1,	Oy, xOy
+};
+
+template<typename T>
+LegalMatrix<T> MirrorMatrix(MirrorOptions option)
+{
+	LegalMatrix<T> result = LegalMatrix<T>::GetIdentityMatrix(3);
+	switch (option)
+	{
+	case Ox:
+		result[1][1] = -1;
+		break;
+	case Oy:
+		result[0][0]  = -1;
+		break;
+	case xOy:
+		result[0][0] = result[1][1] = -1;
+		break;
+	default:
+		break;
+	}
+
+	return result;
+}
+
+template <typename T, typename P>
+LegalMatrix<T> ScaleMatrix(P tensionCoeffX, P tensionCoeffY)
+{
+	LegalMatrix<T> result = LegalMatrix<T>::GetIdentityMatrix(3);
+	result[0][0] = tensionCoeffX;
+	result[1][1] = tensionCoeffY;
+	
+	return result;
+}
