@@ -1,23 +1,31 @@
 #pragma once
 #include <fstream>
-
+#include "2DMatrixTransformation.h"
 class CelestialObject {
 public:
 	CelestialObject(void)
 	{
-		this->x = 0;
-		this->y = 0;
-		this->speed = 0;
+		CelestialObject(0, 0, 0);
 	}
 
 	CelestialObject(double x, double y, double speed)
 	{
 		this->x = x;
 		this->y = y;
+
+		for (int i = 0; i < 3; ++i) {
+			for (int j = 0; j < 3; ++j) {
+				coordMatrix[i][j] = 0;
+			}
+		}
+		coordMatrix[0][0] = x;
+		coordMatrix[1][1] = y;
+		coordMatrix[2][2] = 1;
 		this->speed = speed;
 	}
 	double x;
 	double y;
+	LegalMatrix<double> coordMatrix;
 	double speed;
 };
 
@@ -25,24 +33,25 @@ class SolarSystem
 {
 	CelestialObject* sol;
 	CelestialObject* earth;
-	CelestialObject* luna;
+
+	void transpose() {
+		sol->coordMatrix *= Trans
+	}
 public:
 
-	const double EARTH_SOL_RADIUS = 20;
-	const double LUNA_EARTH_RADIUS = 5;
+	const double EARTH_SOL_RADIUS;
+//	const double LUNA_EARTH_RADIUS = 5;
 
-	SolarSystem(void)
+	SolarSystem(void): EARTH_SOL_RADIUS(20)
 	{
 		this->sol = new CelestialObject(0, 0, 0);
 		this->earth = new CelestialObject(0.5, 0.5, 0.5);
-		this->luna = new CelestialObject(1, 1, 1);
 	}
 	
-	SolarSystem(CelestialObject* sol, CelestialObject* earth, CelestialObject* luna)
+	SolarSystem(CelestialObject* sol, CelestialObject* earth): EARTH_SOL_RADIUS(20)
 	{
 		this->sol = sol;
 		this->earth = earth;
-		this->luna = luna;
 	}
 
 	virtual ~SolarSystem(void)
@@ -56,18 +65,14 @@ public:
 		CelestialObject* sol = new CelestialObject(x, y, speed);
 		*File >> x >> y >> speed;
 		CelestialObject* earth = new CelestialObject(x, y, speed);
-		*File >> x >> y >> speed;
-		CelestialObject* luna = new CelestialObject(x, y, speed);
 
-		return new SolarSystem(sol, earth, luna);
+		return new SolarSystem(sol, earth);
 	};
 
 	void recalculateCoordinates()
 	{
-		this->earth->x += EARTH_SOL_RADIUS*cos(this->earth->speed);
-		this->earth->y += EARTH_SOL_RADIUS*sin(this->earth->speed);
-		this->luna->x += LUNA_EARTH_RADIUS*cos(this->luna->speed);
-		this->luna->y += LUNA_EARTH_RADIUS*sin(this->luna->speed);
+		transpose();
+		rotate();
 	}
 
 };
