@@ -1,0 +1,223 @@
+#include <windows.h>
+#include <algorithm>
+#define shift int
+
+LRESULT _stdcall WndProc (
+    HWND hWnd,
+    UINT message,
+    WPARAM wParam,
+    LPARAM lParam);
+
+WNDCLASS * initWindow (HINSTANCE hInstance);
+
+std::pair<int, int> cartToScreen (std::pair<double, double> coors, HDC dc);
+void horizontalAxeMovingDuringGeneralDrawingOperationInCaseOfThereWereAnyAxisBefore (HDC dc, RECT r, shift Int);
+void verticalAxePreDrawingBeforGeneralDrawingOperationInCaseOfThereWereNotAnyAxisBefore (HDC dc, RECT r);
+void horizontalAxePreDrawingBeforGeneralDrawingOperationInCaseOfThereWereNotAnyAxisBefore (HDC dc, RECT r);
+
+void testDrawing1 (HDC dc);
+void testDrawing (HDC dc);
+void testDrawing (HDC dc, int Int);
+
+void moveCameraUp (HDC dc);
+void moveCameraDown (HDC dc);
+
+const int LEFT = -5;
+const int RIGHT = 5;
+const int TOP = 5;
+const int BOTTOM = -5;
+shift static_shift = 0;
+
+int _stdcall WinMain (
+    HINSTANCE hInstance,
+    HINSTANCE hPrevInstance,
+    LPSTR lpCmdLine,
+    int nCmdShow) {
+    // сначала описывается оконный класс wc, затем создается окно hWnd
+    WNDCLASS* wc = initWindow(hInstance);
+    RegisterClass(wc); // регистрация класса wc
+
+    // hWnd - дескриптор, идентифицирующий окно;
+    // функция создания окна заполняет дескриптор hWnd ненулевым значением
+    HWND hWnd = CreateWindow(
+        (LPCSTR)"class", // имя оконного класса
+        (LPCSTR)"Win32 Application Example", // заголовок окна
+        WS_OVERLAPPEDWINDOW, // стиль окна
+        200, // координаты на экране левого верхнего угла окна,
+        200,
+        400, // его ширина
+        400, // и высота
+        NULL,
+        NULL,
+        hInstance,
+        NULL);
+
+    ShowWindow(hWnd, nCmdShow);
+    UpdateWindow(hWnd); // Зачем эта функция?
+    MSG msg;
+
+    // Основной цикл, 
+    // который ожидает сообщения и рассылает их соответствующим окнам
+    // функция GetMessage() выбирает из очереди сообщение 
+    // и заносит его в структуру msg
+    while (GetMessage(&msg, NULL, 0, 0)) {
+        TranslateMessage(&msg);
+        // передача сообщения в оконную процедуру 
+        // (точнее, функция DispatchMessage 
+        // оповещает систему о необходимости вызова оконной процедуры)
+        DispatchMessage(&msg);
+    }
+
+    return 0;
+}
+
+// оконная процедура
+LRESULT _stdcall WndProc (HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    // функция GetDC возвращает контекст устройства,
+    // в котором хранится информация о том,
+    // в какое окно производится вывод,
+    // каковы размеры рабочей области окна hWnd,
+    // в какой точке экрана находится начало координат рабочей области
+    // и т.п.
+    HDC dc = GetDC(hWnd);
+
+    switch (msg) {
+        case WM_DESTROY: {
+            PostQuitMessage(0);
+            return 0;
+        }
+
+        case WM_SIZE: {
+            InvalidateRect(hWnd, NULL, FALSE);
+            return 0;
+        }
+
+        case WM_PAINT: { }
+        case WM_RBUTTONDOWN: {
+            testDrawing(dc, 0);
+            break;
+        }
+        case WM_LBUTTONDOWN: {
+            testDrawing(dc, 1);
+            break;
+        }
+        case WM_KEYDOWN: {
+            switch (wParam) {
+                case VK_UP: {
+                    moveCameraUp(dc);
+                    break;
+                }
+                case VK_DOWN: {
+                    moveCameraDown(dc);
+                    break;
+                }
+            }
+            break;
+        }
+    }
+
+    // функция ReleaseDC сообщает системе,
+    // что связанный с окном hWnd контекст dc больше не нужен
+    ReleaseDC(hWnd, dc);
+    return DefWindowProc(hWnd, msg, wParam, lParam);
+}
+
+void moveCameraUp (HDC dc) {
+    testDrawing(dc, 10);
+}
+
+void moveCameraDown (HDC dc) {
+    testDrawing(dc, -10);
+}
+
+void verticalAxePreDrawingBeforGeneralDrawingOperationInCaseOfThereWereNotAnyAxisBefore (HDC dc, RECT r) {
+    MoveToEx(dc, r.right / 2, r.top, NULL);
+    LineTo(dc, r.right / 2, r.bottom);
+}
+
+void horizontalAxePreDrawingBeforGeneralDrawingOperationInCaseOfThereWereNotAnyAxisBefore (HDC dc, RECT r) {
+    MoveToEx(dc, r.left, r.bottom / 2, NULL);
+    LineTo(dc, r.right, r.bottom / 2);
+}
+
+void horizontalAxeMovingDuringGeneralDrawingOperationInCaseOfThereWereAnyAxisBefore (HDC dc, RECT r, shift Int) {
+    MoveToEx(dc, r.left, r.bottom / 2 + Int, NULL);
+    LineTo(dc, r.right, r.bottom / 2 + Int);
+}
+
+void testDrawing (HDC dc) {
+    RECT r;
+    GetClientRect(WindowFromDC(dc), &r);
+    Rectangle(dc, 0, 0, r.right, r.bottom);
+
+    horizontalAxePreDrawingBeforGeneralDrawingOperationInCaseOfThereWereNotAnyAxisBefore(dc, r);
+    verticalAxePreDrawingBeforGeneralDrawingOperationInCaseOfThereWereNotAnyAxisBefore(dc, r);
+
+    MoveToEx(dc, r.right, r.top, NULL);
+
+    for (double i = 1; i < 10000; i += 0.01) {
+        double x = -5 + i / 100;
+        std::pair<double, double> coors;
+        coors.first = x;
+        coors.second = x * x;
+        coors = cartToScreen(coors, dc);
+        LineTo(dc, coors.first, coors.second);
+    }
+}
+
+void testDrawing (HDC dc, int Int) {
+    static_shift += Int;
+
+    RECT r;
+    GetClientRect(WindowFromDC(dc), &r);
+    Rectangle(dc, 0, 0, r.right, r.bottom);
+
+    horizontalAxeMovingDuringGeneralDrawingOperationInCaseOfThereWereAnyAxisBefore(dc, r, static_shift);
+    verticalAxePreDrawingBeforGeneralDrawingOperationInCaseOfThereWereNotAnyAxisBefore(dc, r);
+
+    MoveToEx(dc, r.right, r.top, NULL);
+
+    for (double i = 1; i < 10000; i += 0.01) {
+        double x = -5 + i / 100;
+        std::pair<double, double> coors(x, x * x);
+        coors = cartToScreen(coors, dc);
+        LineTo(dc, coors.first, coors.second + static_shift);
+    }
+}
+
+std::pair<int, int> cartToScreen (std::pair<double, double> coors, HDC dc) {
+    std::pair<int, int> retValue;
+
+    RECT r;
+    GetClientRect(WindowFromDC(dc), &r);
+
+    retValue.first = (int)(r.right * (coors.first - LEFT) / (RIGHT - LEFT));
+    retValue.second = (int)(r.bottom * (TOP - coors.second) / (TOP - BOTTOM));
+
+    return retValue;
+}
+
+WNDCLASS* initWindow (HINSTANCE hInstance) {
+    WNDCLASS* wc = new WNDCLASS;
+    wc->style = CS_OWNDC;
+
+    // имя оконной процедуры, закрепленной за данным классом
+    wc->lpfnWndProc = WndProc;
+    wc->cbClsExtra = 0;
+    wc->cbWndExtra = 0;
+
+    // идентификатор приложения,
+    // содержащий адрес начала выделенной ему области памяти
+    wc->hInstance = hInstance;
+    wc->hIcon = LoadIcon(NULL, IDI_APPLICATION);
+    wc->hCursor = LoadCursor(NULL, IDC_ARROW);
+    wc->hbrBackground = (HBRUSH)6;
+    wc->lpszMenuName = 0; // меню в оконном классе отсутствует
+
+    // имя оконного класса, используемое при создании экземпляров окна
+    wc->lpszClassName = (LPCSTR)"class";
+
+    return wc;
+}
+
+//Homogen
